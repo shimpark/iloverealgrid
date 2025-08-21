@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- iFrame -->
+    <link href="/styles/iframe.css" rel="stylesheet" />
+
+    <!-- RealGrid -->
+    <link href="/realgrid/latest/realgrid-style.css" rel="stylesheet" />
+    <script src="/realgrid/latest/realgrid-lic.js"></script>
+    <script src="/realgrid/latest/realgrid.min.js"></script>
+    <script src="/realgrid/latest/libs/jszip.min.js"></script>
+
+    <!-- Custom -->
+    <link href="./index.css" rel="stylesheet" />
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <select name="personalizedList" id="personalizedList" onchange="selectChange()" style="width:200px;height:30px">
+    </select>&nbsp;&nbsp;
+    <input type="button" value="개인화 저장" style="width:80px;height:30px" onclick="updatePersonalizedList()">
+    &nbsp; <input type="button" value="개인화 새로추가" style="width:80px;height:30px" onclick="addPersonalizedList()">
+    &nbsp;
+    <input type="button" value="개인화 삭제" style="width:80px;height:30px" onclick="removePersonalizedList()">&nbsp;
+    <input type="button" value="컬럼 그룹" style="width:80px;height:30px" onclick="setColumnLayout()">&nbsp;
+    <input type="button" value="그룹 초기화" style="width:80px;height:30px" onclick="setDefaultLayout()"></br></br>
+    <input type="button" value="저장" style="width:80px;height:30px" onclick="saveChanges()"></br></br>
+    <div id="realgrid"></div>
+</body>
+
+</html>
