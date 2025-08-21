@@ -690,13 +690,14 @@ function createGrid(container) {
         console.log('3. onContextMenuItemClicked', item, clickData);
         onContextMenuClick(grid, item, clickData);
     };
+
+    loadPersonalizedSettings();
 }
 
 function start() {
     createGrid('realgrid');
 
     // TODO 4: 페이지 로딩 시 저장된 개인화 설정들을 selectbox에 로드
-    loadPersonalizedSettings();
 }
 
 // $.document.ready(start);
@@ -973,17 +974,21 @@ function gridEvent() {
         }
     });
 
-    // ⭐ 편집모드시 검열
     gridView.onShowEditor = function (grid, index, props, attrs) {
         console.log('onShowEditor 호출됨:', index);
 
-        let curr = grid.getCurrent();
+        var dataRow = grid.getDataRow(index.itemIndex);
 
-        var project_editable = gridView.getValues(curr.dataRow).project_editable;
+        // 추가모드
+        if (dataRow === -1) {
+            return true;
+        }
+
+        var rowData = dataProvider.getJsonRow(dataRow);
 
         // JSON 데이터의 project_editable 값 확인
-        if (typeof project_editable === 'boolean') {
-            if (project_editable) {
+        if (rowData && typeof rowData.project_editable === 'boolean') {
+            if (rowData.project_editable) {
                 return true;
             } else {
                 return false;
@@ -1005,20 +1010,20 @@ function loadPersonalizedSettings() {
 
         if (savedSettings) {
             personalizedList = JSON.parse(savedSettings);
+
+            //applyPersonalizedSettings('default');
+
+            userCount = parseInt(savedCounter, 10);
         } else {
             personalizedList = {};
         }
 
-        if (savedCounter) {
-            userCount = parseInt(savedCounter, 10);
+        const keys = Object.keys(personalizedList).filter((key) => key.startsWith('personalize'));
+        if (keys.length > 0) {
+            const maxNum = Math.max(...keys.map((key) => parseInt(key.replace('personalize', ''))));
+            userCount = maxNum + 1;
         } else {
-            const keys = Object.keys(personalizedList).filter((key) => key.startsWith('personalize'));
-            if (keys.length > 0) {
-                const maxNum = Math.max(...keys.map((key) => parseInt(key.replace('personalize', ''))));
-                userCount = maxNum + 1;
-            } else {
-                userCount = 1;
-            }
+            userCount = 1;
         }
 
         const select = document.getElementById('personalizedList');
@@ -1046,17 +1051,21 @@ function loadPersonalizedSettings() {
             // 첫 번째 개인화 설정을 자동으로 적용
             const firstKey = Object.keys(personalizedList)[0];
             if (firstKey) {
-                applyPersonalizedSettings(firstKey);
+                setTimeout(function () {
+                    applyPersonalizedSettings(firstKey);
+                }, 1000);
+
                 select.value = firstKey;
                 console.log('첫 번째 개인화 설정이 자동으로 적용되었습니다:', firstKey);
             }
         }
     } catch (error) {
+        alert('개인화 설정 로드 중 오류가 발생했습니다. 기본 레이아웃으로 초기화합니다.');
         console.error('개인화 설정 로드 중 오류 발생:', error);
         personalizedList = {};
         userCount = 1;
-        localStorage.removeItem('realgrid_personalized_settings');
-        localStorage.removeItem('realgrid_user_counter');
+        //localStorage.removeItem('realgrid_personalized_settings');
+        //localStorage.removeItem('realgrid_user_counter');
     }
 }
 
@@ -1124,12 +1133,14 @@ function getGridState() {
             filterColumns.push(gridView.getColumns()[i].name);
         }
     }
-    //각 컬럼 필터 목록
-    var activeColumnFilters = [];
-    for (var j = 0; j < filterColumns.length; j++) {
-        var filterList = gridView.getActiveColumnFilters(filterColumns[j]);
-        activeColumnFilters.push(filterList);
-    }
+
+    //각 컬럼 필터 목록(수정된 버전)
+    const activeColumnFilters = filterColumns.map((col, idx) => {
+        const filterList = gridView.getActiveColumnFilters(col);
+        return {
+            [col]: filterList,
+        };
+    });
 
     return {
         layout: gridView.saveColumnLayout(),
@@ -1156,6 +1167,10 @@ function addPersonalizedList() {
                 name: '기본 레이아웃',
             };
             personalizedList['default'] = defaultPersonalizationData;
+
+            while (select.options.length > 0) {
+                select.remove(0);
+            }
 
             // 더미 옵션 삭제
             select.innerHTML = '';
@@ -1210,48 +1225,46 @@ function updatePersonalizedList() {
             const defaultPersonalizationData = {
                 ...gridState,
                 createdAt: new Date().toISOString(),
-                name: '기본 레이아웃', // 최초 저장 시 "기본 레이아웃"으로 이름 설정
+                name: '기본 레이아웃',
             };
-
             personalizedList['default'] = defaultPersonalizationData;
             savePersonalizedSettings();
-            select.value = 'default';
+
+            applyPersonalizedSettings('default');
+
+            // 더미 옵션 삭제
+            select.innerHTML = '';
+
+            // 실제 '기본 레이아웃' 옵션 추가
+            const defaultOption = document.createElement('option');
+            defaultOption.value = 'default';
+            defaultOption.text = '기본 레이아웃';
+            select.appendChild(defaultOption);
+
+            console.log('최초 개인화 설정이 "기본 레이아웃"으로 저장되었습니다.');
             alert('현재 그리드 상태가 "기본 레이아웃"으로 저장되었습니다.');
             return;
         }
 
-        // '기본 레이아웃'이 선택되었지만, 이미 저장된 personalizedList가 있는 경우
-        if (selectedValue === 'default' && personalizedList['default']) {
-            console.log('기본 레이아웃을 업데이트합니다...');
-            const originalData = personalizedList[selectedValue];
-            const gridState = getGridState();
-            const updatedPersonalizationData = {
-                ...originalData,
-                ...gridState,
-                updatedAt: new Date().toISOString(),
-            };
-            personalizedList[selectedValue] = updatedPersonalizationData;
-            savePersonalizedSettings();
-            alert('"' + originalData.name + '" 설정이 현재 상태로 업데이트되었습니다.');
-            return;
-        }
+        const gridState = getGridState();
+        const originalData = personalizedList[selectedValue];
 
-        // 기존 개인화 설정 업데이트
-        if (personalizedList[selectedValue]) {
-            console.log('"' + selectedValue + '" 설정을 업데이트합니다...');
-            const originalData = personalizedList[selectedValue];
-            const gridState = getGridState();
-            const updatedPersonalizationData = {
-                ...originalData,
-                ...gridState,
-                updatedAt: new Date().toISOString(),
-            };
-            personalizedList[selectedValue] = updatedPersonalizationData;
-            savePersonalizedSettings();
-            alert('"' + originalData.name + '" 설정이 현재 상태로 업데이트되었습니다.');
-        } else {
-            alert('수정할 개인화 설정을 찾을 수 없습니다.');
-        }
+        // 1. Delete the existing data for the key
+        delete personalizedList[selectedValue];
+
+        // 2. Create the new data object
+        const updatedPersonalizationData = {
+            ...originalData,
+            ...gridState,
+            updatedAt: new Date().toISOString(),
+        };
+
+        // 3. Save the new data under the same key
+        personalizedList[selectedValue] = updatedPersonalizationData;
+        savePersonalizedSettings();
+
+        alert('"' + originalData.name + '" 설정이 현재 상태로 업데이트되었습니다.');
+        console.log('개인화 설정이 삭제 후 다시 저장되었습니다: ' + selectedValue);
     } catch (error) {
         console.error('개인화 설정 업데이트 중 오류 발생:', error);
         alert('개인화 설정 업데이트에 실패했습니다: ' + error.message);
@@ -1315,14 +1328,44 @@ function applyPersonalizedSettings(settingKey) {
     gridView.displayOptions.rowHeight = layout.rowHeight;
 
     // 필터
-    for (var i = 0; i < gridView.getColumns().length; i++) {
+    for (let i = 0; i < gridView.getColumns().length; i++) {
         gridView.columnByName(gridView.getColumns()[i].name).autoFilter = false;
     }
     if (layout.filterColumns) {
-        for (var i = 0; i < layout.filterColumns.length; i++) {
+        for (let i = 0; i < layout.filterColumns.length; i++) {
             gridView.columnByName(layout.filterColumns[i]).autoFilter = true;
         }
     }
+
+    // 기존 활성화되어 있던 필터 다시 활성화
+    // null 또는 undefined 체크를 추가하여 오류를 방지
+    if (layout.activeColumnFilters && Array.isArray(layout.activeColumnFilters)) {
+        layout.activeColumnFilters.forEach((filter) => {
+            // filter가 null 또는 undefined가 아닌지 확인
+            if (filter) {
+                const column = Object.keys(filter)[0];
+                const items = filter[column];
+
+                // items가 유효한 배열인지 확인
+                if (items && items.length > 0) {
+                    const filterNames = items.map((f) => f.name);
+                    gridView.autoFiltersRefresh();
+                    gridView.activateColumnFilters(column, filterNames, true);
+                }
+            }
+        });
+    }
+
+    // 기존 활성화되어 있던 필터 다시 활성화
+    // layout.activeColumnFilters.forEach((filter, idx) => {
+    //     const column = Object.keys(filter)[0];
+    //     const items = filter[column];
+    //     if (items?.length > 0) {
+    //         const filterNames = items.map((f) => f.name);
+    //         gridView.autoFiltersRefresh();
+    //         gridView.activateColumnFilters(column, filterNames, true);
+    //     }
+    // });
 
     //정렬
     var sortFields = [];
