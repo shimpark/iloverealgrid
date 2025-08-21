@@ -78,3 +78,472 @@
 .rg-group-panel-item {
     background: #333333;
 }
+
+/* 새로운 HTML 구조를 위한 스타일 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+/* 헤더 스타일 */
+.app-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.app-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+/* 메인 컨테이너 */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* 섹션 스타일 */
+.control-section, .grid-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* Compact 스타일 */
+.control-section.compact {
+    margin-bottom: 1rem;
+}
+
+.control-section.compact .section-header {
+    display: none;
+}
+
+.control-group.compact {
+    padding: 1rem 2rem;
+}
+
+.button-group.compact {
+    gap: 0.75rem;
+}
+
+.section-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* 컨트롤 그룹 */
+.control-group {
+    padding: 2rem;
+}
+
+.select-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.select-wrapper label {
+    display: block;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.select-wrapper select {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.select-wrapper select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    font-size: 16px;
+}
+
+/* 버튼 색상 변형 */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    color: white;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #333;
+}
+
+/* Compact 버튼 스타일 */
+.btn-compact {
+    padding: 8px 16px;
+    font-size: 13px;
+    min-width: 100px;
+}
+
+/* 그리드 섹션 */
+.grid-section {
+    margin-bottom: 3rem;
+}
+
+.grid-container {
+    padding: 2rem;
+}
+
+/* 개인화 설정 컨트롤 */
+.personalization-controls {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.personalization-controls .select-wrapper.compact {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 250px;
+}
+
+.personalization-controls .button-group.compact {
+    margin: 0;
+}
+
+.personalization-controls .select-wrapper.compact label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+
+.personalization-controls .select-wrapper.compact select {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+}
+
+#realgrid {
+    width: 100%;
+    height: 600px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .header-content {
+        padding: 0 1rem;
+    }
+
+    .main-container {
+        padding: 0 1rem;
+    }
+
+    .app-title {
+        font-size: 1.5rem;
+    }
+
+    .control-group {
+        padding: 1.5rem;
+    }
+
+    .control-group.compact {
+        padding: 1rem 1.5rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .button-group.compact {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .btn-compact {
+        width: auto;
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .personalization-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .personalization-controls .select-wrapper.compact {
+        min-width: auto;
+    }
+
+    #realgrid {
+        height: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-title {
+        font-size: 1.4rem;
+    }
+
+    .section-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .control-group {
+        padding: 1rem;
+    }
+
+    .control-group.compact {
+        padding: 0.75rem 1rem;
+    }
+
+    .grid-container {
+        padding: 1rem;
+    }
+
+    .personalization-controls {
+        padding: 1rem;
+    }
+
+    .btn-compact {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-width: 70px;
+    }
+}
+
+/* 개인화 설정 모달 스타일 */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    width: 400px;
+    max-width: 90%;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    transition: opacity 0.2s;
+}
+
+.close:hover {
+    opacity: 0.7;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-body p {
+    margin: 0 0 15px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.modal-body input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.modal-body input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-cancel {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.btn-cancel:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
