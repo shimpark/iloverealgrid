@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -18,19 +17,122 @@
     <!-- Custom -->
     <link href="./index.css" rel="stylesheet" />
     <script src="./index.js"></script>
-</head>
+  </head>
 
-<body>
-    <select name="personalizedList" id="personalizedList" onchange="selectChange()" style="width:200px;height:30px">
-    </select>&nbsp;&nbsp;
-    <input type="button" value="개인화 저장" style="width:80px;height:30px" onclick="updatePersonalizedList()">
-    &nbsp; <input type="button" value="개인화 새로추가" style="width:80px;height:30px" onclick="addPersonalizedList()">
-    &nbsp;
-    <input type="button" value="개인화 삭제" style="width:80px;height:30px" onclick="removePersonalizedList()">&nbsp;
-    <input type="button" value="컬럼 그룹" style="width:80px;height:30px" onclick="setColumnLayout()">&nbsp;
-    <input type="button" value="그룹 초기화" style="width:80px;height:30px" onclick="setDefaultLayout()"></br></br>
-    <input type="button" value="저장" style="width:80px;height:30px" onclick="saveChanges()"></br></br>
-    <div id="realgrid"></div>
-</body>
+  <body>
+    <!-- 헤더 섹션 -->
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="app-title">RealGrid 프로젝트 관리</h1>
+      </div>
+    </header>
 
+    <!-- 메인 컨트롤 패널 -->
+    <main class="main-container">
+      <!-- 그리드 컨트롤 섹션 -->
+      <section class="control-section compact">
+        <div class="control-group compact">
+          <div class="button-group compact">
+            <!-- 편집 모드 토글 버튼 -->
+            <button
+              class="btn btn-warning btn-compact"
+              id="editModeToggleBtn"
+              onclick="toggleEditMode()"
+            >
+              <span class="btn-icon">✏️</span>
+              보기모드
+            </button>
+
+            <button class="btn btn-secondary btn-compact" onclick="saveToServer()">
+              <span class="btn-icon">💾</span>
+              데이터 저장 (BACKEND)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 그리드와 개인화 설정을 함께 배치 -->
+      <section class="grid-section">
+        <div class="section-header">
+          <h2>프로젝트 데이터</h2>
+          <p>프로젝트 정보를 표시하고 편집할 수 있는 그리드입니다</p>
+        </div>
+
+        <div class="grid-container">
+          <!-- 개인화 설정 컨트롤을 그리드 위에 배치 -->
+          <div class="personalization-controls">
+            <div class="select-wrapper compact">
+              <label for="personalizedList">저장된 설정:</label>
+              <select name="personalizedList" id="personalizedList" onchange="selectChange()">
+                <option value="">설정을 선택하세요</option>
+              </select>
+            </div>
+
+            <div class="button-group compact">
+              <button class="btn btn-primary btn-compact" onclick="updatePersonalizedList()">
+                <span class="btn-icon">💾</span>
+                저장
+              </button>
+              <button class="btn btn-success btn-compact" onclick="addPersonalizedList()">
+                <span class="btn-icon">➕</span>
+                새로추가
+              </button>
+              <button class="btn btn-danger btn-compact" onclick="removePersonalizedList()">
+                <span class="btn-icon">🗑️</span>
+                삭제
+              </button>
+            </div>
+          </div>
+
+          <div id="realgrid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 개인화 설정 모달 -->
+    <div id="personalizationModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>개인화 설정 저장</h3>
+          <span class="close" onclick="closePersonalizationModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p>저장할 개인화 설정의 이름을 입력하세요:</p>
+          <input
+            type="text"
+            id="personalizationName"
+            placeholder="예: 내 작업환경, 프로젝트별 뷰 등"
+            maxlength="50"
+          />
+          <div class="modal-buttons">
+            <button onclick="confirmPersonalization()" class="btn-save">저장</button>
+            <button onclick="closePersonalizationModal()" class="btn-cancel">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 개인화 설정 모달 -->
+    <div id="personalizationModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>개인화 설정 저장</h3>
+          <span class="close" onclick="closePersonalizationModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p>저장할 개인화 설정의 이름을 입력하세요:</p>
+          <input
+            type="text"
+            id="personalizationName"
+            placeholder="예: 내 작업환경, 프로젝트별 뷰 등"
+            maxlength="50"
+          />
+          <div class="modal-buttons">
+            <button onclick="confirmPersonalization()" class="btn-save">저장</button>
+            <button onclick="closePersonalizationModal()" class="btn-cancel">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
