@@ -182,6 +182,7 @@ var columns = [
     },
     width: 100,
     autoFilter: true,
+    editable: true,
   },
   {
     name: 'project_leader',
@@ -731,8 +732,11 @@ function createGrid(container) {
 
   // ⭐ 컨텍스트 메뉴 이벤트 핸들러 설정
   gridView.onContextMenuPopup = function (grid, x, y, elementName) {
-    console.log('1. onContextMenuPopup', elementName.cellType);
-    // 해더 셀에서만 컨텍스트 메뉴를 표시
+    // 수정모드가 아닐 경우 컨텍스트 메뉴 표시하지 않음
+    if (!isEditMode) {
+      return false;
+    }
+
     if (elementName.cellType == 'header') {
       grid.setCurrent({ column: grid.mouseToIndex(x, y).column });
       setContextHeaderMenu(gridView);
@@ -748,8 +752,6 @@ function createGrid(container) {
     console.log('3. onContextMenuItemClicked', item, clickData);
     onContextMenuClick(grid, item, clickData);
   };
-
-  loadPersonalizedSettings();
 
   // 초기 보기모드 설정
   setViewMode();
@@ -898,10 +900,10 @@ function setContextIndicatorMenu(grid) {
       label: '행추가',
       tag: 'insertRow',
     },
-    {
-      label: '행추가 취소',
-      tag: 'cancelInsertRow',
-    },
+    // {
+    //   label: '행추가 취소',
+    //   tag: 'cancelInsertRow',
+    // },
     {
       label: '행삭제',
       tag: 'deleteRow',
@@ -976,20 +978,20 @@ function onContextMenuClick(grid, data, index) {
         dataProvider.insertRow(curr.dataRow, {});
       }
       break;
-    case 'cancelInsertRow':
-      var curr = grid.getCurrent();
-      console.log('cancelInsertRow', curr);
-      if (curr.itemIndex > -1) {
-        dataProvider.softDeleting = false;
-        dataProvider.removeRow(curr.dataRow);
-        dataProvider.softDeleting = true;
-      }
-      break;
+    // case 'cancelInsertRow':
+    //   var curr = grid.getCurrent();
+    //   console.log('cancelInsertRow', curr);
+    //   if (curr.itemIndex > -1) {
+    //     dataProvider.softDeleting = false;
+    //     dataProvider.removeRow(curr.dataRow);
+    //     dataProvider.softDeleting = true;
+    //   }
+    //   break;
     case 'deleteRow':
       if (grid.getCurrent().itemIndex > -1) {
         let curr = grid.getCurrent();
 
-        var project_editable = gridView.getValues(curr.dataRow).project_editable;
+        var project_editable = gridView.getValues(curr.itemIndex).project_editable;
         if (!project_editable) {
           alert('이 프로젝트는 삭제할 수 없습니다. 편집 권한이 없습니다.');
         } else {
@@ -1043,6 +1045,8 @@ function onContextMenuClick(grid, data, index) {
 function gridEvent() {
   // 데이터 로드 완료 시 첫 번째 개인화 설정 적용
   gridView.onDataLoadComplated = (grid) => {
+    loadPersonalizedSettings();
+
     const firstKey = Object.keys(personalizedList)[0];
     if (firstKey) {
       applyPersonalizedSettings(firstKey);
@@ -1115,15 +1119,15 @@ function gridEvent() {
 
     // 1. 전체 편집 모드 체크
     if (!isEditMode) {
-      console.log('보기 모드입니다. 편집이 불가능합니다.');
+      //console.log('보기 모드입니다. 편집이 불가능합니다.');
       return false;
     }
 
-    var columnName = grid.getColumn(dataRow).name;
+    var columnName = index.column;
 
     // 2. 컬럼별 편집 권한 체크 (columns[]의 editable 속성)
     if (!isColumnEditable(columnName)) {
-      console.log('컬럼이 편집 불가능합니다:', columnName);
+      //console.log('컬럼이 편집 불가능합니다:', columnName);
       return false;
     }
 
@@ -1131,12 +1135,12 @@ function gridEvent() {
     var rowData = dataProvider.getJsonRow(dataRow);
     if (rowData && typeof rowData.project_editable === 'boolean') {
       if (!rowData.project_editable) {
-        console.log('해당 행은 편집 권한이 없습니다.');
+        //console.log('해당 행은 편집 권한이 없습니다.');
         return false;
       }
     }
 
-    console.log('편집이 허용됩니다:', columnName);
+    //console.log('편집이 허용됩니다:', columnName);
     return true;
   };
 }
@@ -1158,6 +1162,7 @@ var personalizedList = {};
  */
 function loadPersonalizedSettings() {
   try {
+    console.log('loadPersonalizedSettings');
     const savedSettings = localStorage.getItem('realgrid_personalized_settings');
     const savedCounter = localStorage.getItem('realgrid_user_counter');
 
@@ -1165,7 +1170,9 @@ function loadPersonalizedSettings() {
       personalizedList = JSON.parse(savedSettings);
       userCount = parseInt(savedCounter, 10);
     } else {
+      // 빈 객체로 초기화 (배열이 아님)
       personalizedList = {};
+      userCount = 1;
     }
 
     const keys = Object.keys(personalizedList).filter((key) => key.startsWith('personalize'));
@@ -1913,7 +1920,7 @@ function saveToServer() {
 }
 
 // 전역 변수로 편집 모드 상태 관리
-var isEditMode = false; // 초기값: 보기모드
+var isEditMode = true; // 초기값: 보기모드
 
 /**
  * 편집 모드와 보기 모드를 토글하는 함수
